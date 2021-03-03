@@ -1,5 +1,5 @@
 
-target_sources(${TEST_FRAMEWORK_TARGET} PRIVATE
+target_sources(${VERILATEST_TARGET} PRIVATE
     SignalObserver.hpp
     SignalObserver.cpp
     TestBench.cpp
