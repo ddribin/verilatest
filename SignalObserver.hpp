@@ -6,14 +6,16 @@
 #include <iostream>
 #include <algorithm>
 
-template <typename T>
+template <typename T, class Core>
 class SignalObserver
 {
 public:
-    typedef std::tuple<uint64_t, T> change_tuple;
-    typedef std::vector<change_tuple> change_vector;
+    typedef std::tuple<uint64_t, T> ChangeTuple;
+    typedef std::vector<ChangeTuple> ChangeVector;
 
-    SignalObserver(T initialValue = 0) : _value(initialValue) { }
+    SignalObserver(T Core:: *signal, T initialValue = 0) : 
+        _signal(signal),
+        _value(initialValue) { }
     virtual ~SignalObserver() { }
 
     void updateSignal(uint64_t time, T newValue)
@@ -24,27 +26,52 @@ public:
         }
     }
 
-    const change_vector& changes()
+    const ChangeVector& changes()
     {
         return _changes;
     }
 
-    change_vector changes(size_t limit)
+    ChangeVector changes(size_t limit)
     {
         auto first = _changes.begin();
         auto last = _changes.begin() + std::min(limit, _changes.size());
-        change_vector changes(first, last);
+        ChangeVector changes(first, last);
         return changes;
+    }
+
+    std::function<void (uint64_t, Core * core)> hook(T Core::*signal) {
+        auto hook = [=](uint64_t tickCount, Core *core) {
+            this->updateSignal(tickCount, core->*signal);
+        };
+        return hook;
+    }
+
+    std::function<void (uint64_t, Core * core)> hook() {
+        auto hook = [=](uint64_t tickCount, Core *core) {
+            this->updateSignal(tickCount, core->*_signal);
+        };
+        return hook;
     }
 
 private:
     T _value;
-    change_vector _changes;
+    T Core::* _signal;
+    ChangeVector _changes;
 };
 
-typedef SignalObserver<uint8_t> SignalObserver8;
-typedef SignalObserver8::change_vector change_vector_8;
 
-std::ostream& operator << ( std::ostream& os, SignalObserver8::change_tuple const& value );
+template <typename T, class Core>
+SignalObserver<T, Core> makeObserver(T Core:: *signal) {
+    SignalObserver<T, Core> observer(signal);
+    return observer;
+}
+
+//typedef SignalObserver<uint8_t> SignalObserver8;
+//typedef SignalObserver8::ChangeVector ChangeVector8;
+
+typedef std::tuple<uint64_t,uint8_t> SignalEvent8;
+typedef std::vector<SignalEvent8> ChangeVector8;
+
+std::ostream& operator << ( std::ostream& os, std::tuple<uint64_t, uint8_t> const& value );
 
 #endif // SIGNAL_OBSERVER_H

@@ -4,6 +4,7 @@
 #include <verilated.h>
 #include <verilated_vcd_c.h>
 #include <functional>
+#include <vector>
 
 
 // Current simulation time
@@ -16,12 +17,14 @@ template <class Core>
 class TestBench
 {
 public:
+    typedef std::function<void (uint64_t, Core *)> TickHook;
+
     TestBench()
         : _tickCount{0}, _trace{NULL}
     {
         Verilated::traceEverOn(true);
         _core = new Core;
-        _core->setClock(0);
+        _core->clock = 0;
         _core->eval();
     }
 
@@ -62,25 +65,42 @@ public:
 
     virtual void tick(void) {
         incrementTick();
+        // Call pre hooks after incrementTick() so the _tickCount is the same as the post hooks.
+        callPreHooks();
         _core->eval();
         if (_trace != NULL) {
             _trace->dump(static_cast<vluint64_t>(10*_tickCount-2));
         }
 
         // Set clock high
-        _core->setClock(1);
+        _core->clock = 1;
         _core->eval();
         if (_trace != NULL) {
             _trace->dump(static_cast<vluint64_t>(10*_tickCount));
         }
 
         // Set clock low
-        _core->setClock(0);
+        _core->clock = 0;
         _core->eval();
         if (_trace != NULL) {
             _trace->dump(static_cast<vluint64_t>(10*_tickCount+5));
             _trace->flush();
         }
+        callPostHooks();
+    }
+
+    void tick(uint64_t count) {
+        while (count > 0) {
+            tick();
+            count--;
+        }
+    }
+    void addPreHook(TickHook hook) {
+        _preHooks.push_back(hook);
+    }
+
+    void addPostHook(TickHook hook) {
+        _postHooks.push_back(hook);
     }
 
     void tick_n(uint64_t count, std::function<void (uint64_t, Core *)>func)
@@ -96,8 +116,22 @@ private:
     Core * _core;
     uint64_t _tickCount;
     VerilatedVcdC *_trace;
+    std::vector<TickHook> _preHooks;
+    std::vector<TickHook> _postHooks;
 
-    void incrementTick(void) {
+    void callPreHooks() {
+        for (auto h : _preHooks) {
+            h(_tickCount, _core);
+        }
+    }
+
+    void callPostHooks() {
+        for (auto h : _postHooks) {
+            h(_tickCount, _core);
+        }
+    }
+
+    void incrementTick() {
         _tickCount++;
         main_time++;
     }

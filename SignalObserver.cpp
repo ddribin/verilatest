@@ -2,8 +2,8 @@
 
 using namespace std;
 
-ostream& operator << (ostream& os, SignalObserver8::change_tuple const& value )
+ostream& operator << (ostream& os, tuple<uint64_t, uint8_t> const& value )
 {
-    os << "{" << std::get<0>(value) << ", " << static_cast<int>(std::get<1>(value)) << "}";
+    os << "{" << get<0>(value) << ", " << static_cast<int>(get<1>(value)) << "}";
     return os;
 }
