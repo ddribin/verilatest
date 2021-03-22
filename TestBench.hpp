@@ -29,11 +29,13 @@ public:
 
     virtual ~TestBench(void) { }
 
-    Core& core(void) {
+    Core& core(void)
+    {
         return _core;
     }
 
-    virtual void openTrace(const char * filename) {
+    virtual void openTrace(const char * filename)
+    {
         if (_trace == NULL) {
             _trace = new VerilatedVcdC;
             // Trace 99 levels of hierarchy
@@ -43,7 +45,8 @@ public:
         }
     }
 
-    virtual void closeTrace(void) {
+    virtual void closeTrace(void)
+    {
         if (_trace != NULL) {
             _trace->close();
             delete _trace;
@@ -51,25 +54,30 @@ public:
         }
     }
 
-    uint64_t tickCount(void) {
+    uint64_t tickCount(void)
+    {
         return _tickCount;
     }
 
-    virtual void eval(void) {
+    virtual void eval(void)
+    {
         _core.eval();
     }
 
-    void tick(uint64_t count = 0) {
+    void tick(uint64_t count = 0)
+    {
         while (count > 0) {
             oneTick();
             count--;
         }
     }
-    void addPreHook(TickHook hook) {
+    void addPreHook(TickHook hook)
+    {
         _preHooks.push_back(hook);
     }
 
-    void addPostHook(TickHook hook) {
+    void addPostHook(TickHook hook)
+    {
         _postHooks.push_back(hook);
     }
 
@@ -89,24 +97,28 @@ private:
     std::vector<TickHook> _preHooks;
     std::vector<TickHook> _postHooks;
 
-    void callPreHooks() {
+    void callPreHooks()
+    {
         for (auto h : _preHooks) {
             h(_tickCount, _core);
         }
     }
 
-    void callPostHooks() {
+    void callPostHooks()
+    {
         for (auto h : _postHooks) {
             h(_tickCount, _core);
         }
     }
 
-    void incrementTick() {
+    void incrementTick()
+    {
         _tickCount++;
         main_time++;
     }
 
-    void oneTick(void) {
+    void oneTick(void)
+    {
         incrementTick();
         // Call pre hooks after incrementTick() so the _tickCount is the same as the post hooks.
         callPreHooks();

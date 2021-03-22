@@ -18,17 +18,20 @@ public:
     SignalPublisher(T Core::* signal) : _signal(signal) { }
     virtual ~SignalPublisher() { }
 
-    void addInput(const ChangeTuple &input) {
+    void addInput(const ChangeTuple &input)
+    {
         _changes.push(input);
     }
 
-    void addInputs(const ChangeVector &inputs) {
+    void addInputs(const ChangeVector &inputs)
+    {
         for (auto i : inputs) {
             _changes.push(i);
         }
     }
 
-    std::function<void (uint64_t, Core& core)> hook() {
+    std::function<void (uint64_t, Core& core)> hook()
+    {
         auto hook = [=](uint64_t tickCount, Core& core) {
             this->updateSignal(tickCount, core);
         };
@@ -38,14 +41,16 @@ public:
 private:
     T Core::* _signal;
 
-    struct EventCompare {
+    struct EventCompare
+    {
         bool operator() (ChangeTuple left, ChangeTuple right) {
             return std::get<0>(left) > std::get<0>(right);
          }
     };
     std::priority_queue<ChangeTuple, ChangeVector, EventCompare> _changes;
 
-    void updateSignal(uint64_t time, Core& core) {
+    void updateSignal(uint64_t time, Core& core)
+    {
         if (_changes.size() == 0) {
             return;
         }
@@ -59,13 +64,15 @@ private:
 };
 
 template <typename T, class Core>
-SignalPublisher<T, Core> makePublisher(T Core:: *signal) {
+SignalPublisher<T, Core> makePublisher(T Core:: *signal)
+{
     SignalPublisher<T, Core> observer(signal);
     return observer;
 }
 
 template <typename T, class Core>
-SignalPublisher<T, Core> makePublisher(T Core:: *signal, const std::vector<std::tuple<uint64_t, T>> &inputs) {
+SignalPublisher<T, Core> makePublisher(T Core:: *signal, const std::vector<std::tuple<uint64_t, T>> &inputs)
+{
     SignalPublisher<T, Core> observer(signal);
     observer.addInputs(inputs);
     return observer;

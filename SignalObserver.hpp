@@ -39,7 +39,8 @@ public:
         return changes;
     }
 
-    std::function<void (uint64_t, Core& core)> hook() {
+    std::function<void (uint64_t, Core& core)> hook()
+    {
         auto hook = [=](uint64_t tickCount, Core& core) {
             this->updateSignal(tickCount, core.*_signal);
         };
@@ -54,7 +55,8 @@ private:
 
 
 template <typename T, class Core>
-SignalObserver<T, Core> makeObserver(T Core:: *signal) {
+SignalObserver<T, Core> makeObserver(T Core:: *signal)
+{
     SignalObserver<T, Core> observer(signal);
     return observer;
 }
