@@ -17,23 +17,19 @@ template <class Core>
 class TestBench
 {
 public:
-    typedef std::function<void (uint64_t, Core *)> TickHook;
+    typedef std::function<void (uint64_t, Core&)> TickHook;
 
     TestBench()
         : _tickCount{0}, _trace{NULL}
     {
         Verilated::traceEverOn(true);
-        _core = new Core;
-        _core->clock = 0;
-        _core->eval();
+        _core.clock = 0;
+        _core.eval();
     }
 
-    virtual ~TestBench(void) {
-        delete _core;
-        _core = NULL;
-    }
+    virtual ~TestBench(void) { }
 
-    Core *core(void) {
+    Core& core(void) {
         return _core;
     }
 
@@ -41,7 +37,7 @@ public:
         if (_trace == NULL) {
             _trace = new VerilatedVcdC;
             // Trace 99 levels of hierarchy
-            _core->trace(_trace, 99);
+            _core.trace(_trace, 99);
             _trace->open(filename);
             _trace->dump(static_cast<vluint64_t>(10*_tickCount));
         }
@@ -60,7 +56,7 @@ public:
     }
 
     virtual void eval(void) {
-        _core->eval();
+        _core.eval();
     }
 
     void tick(uint64_t count = 0) {
@@ -87,7 +83,7 @@ public:
     }
 
 private:
-    Core * _core;
+    Core _core;
     uint64_t _tickCount;
     VerilatedVcdC *_trace;
     std::vector<TickHook> _preHooks;
@@ -114,21 +110,21 @@ private:
         incrementTick();
         // Call pre hooks after incrementTick() so the _tickCount is the same as the post hooks.
         callPreHooks();
-        _core->eval();
+        _core.eval();
         if (_trace != NULL) {
             _trace->dump(static_cast<vluint64_t>(10*_tickCount-2));
         }
 
         // Set clock high
-        _core->clock = 1;
-        _core->eval();
+        _core.clock = 1;
+        _core.eval();
         if (_trace != NULL) {
             _trace->dump(static_cast<vluint64_t>(10*_tickCount));
         }
 
         // Set clock low
-        _core->clock = 0;
-        _core->eval();
+        _core.clock = 0;
+        _core.eval();
         if (_trace != NULL) {
             _trace->dump(static_cast<vluint64_t>(10*_tickCount+5));
             _trace->flush();

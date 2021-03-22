@@ -39,16 +39,9 @@ public:
         return changes;
     }
 
-    std::function<void (uint64_t, Core * core)> hook(T Core::*signal) {
-        auto hook = [=](uint64_t tickCount, Core *core) {
-            this->updateSignal(tickCount, core->*signal);
-        };
-        return hook;
-    }
-
-    std::function<void (uint64_t, Core * core)> hook() {
-        auto hook = [=](uint64_t tickCount, Core *core) {
-            this->updateSignal(tickCount, core->*_signal);
+    std::function<void (uint64_t, Core& core)> hook() {
+        auto hook = [=](uint64_t tickCount, Core& core) {
+            this->updateSignal(tickCount, core.*_signal);
         };
         return hook;
     }

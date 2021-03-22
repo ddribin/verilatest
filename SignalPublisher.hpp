@@ -28,8 +28,8 @@ public:
         }
     }
 
-    std::function<void (uint64_t, Core * core)> hook() {
-        auto hook = [=](uint64_t tickCount, Core *core) {
+    std::function<void (uint64_t, Core& core)> hook() {
+        auto hook = [=](uint64_t tickCount, Core& core) {
             this->updateSignal(tickCount, core);
         };
         return hook;
@@ -45,14 +45,14 @@ private:
     };
     std::priority_queue<ChangeTuple, ChangeVector, EventCompare> _changes;
 
-    void updateSignal(uint64_t time, Core *core) {
+    void updateSignal(uint64_t time, Core& core) {
         if (_changes.size() == 0) {
             return;
         }
 
         ChangeTuple t = _changes.top();
         if (std::get<0>(t) == time) {
-            core->*_signal = std::get<1>(t);
+            core.*_signal = std::get<1>(t);
             _changes.pop();
         }
     }
