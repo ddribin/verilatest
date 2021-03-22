@@ -63,35 +63,9 @@ public:
         _core->eval();
     }
 
-    virtual void tick(void) {
-        incrementTick();
-        // Call pre hooks after incrementTick() so the _tickCount is the same as the post hooks.
-        callPreHooks();
-        _core->eval();
-        if (_trace != NULL) {
-            _trace->dump(static_cast<vluint64_t>(10*_tickCount-2));
-        }
-
-        // Set clock high
-        _core->clock = 1;
-        _core->eval();
-        if (_trace != NULL) {
-            _trace->dump(static_cast<vluint64_t>(10*_tickCount));
-        }
-
-        // Set clock low
-        _core->clock = 0;
-        _core->eval();
-        if (_trace != NULL) {
-            _trace->dump(static_cast<vluint64_t>(10*_tickCount+5));
-            _trace->flush();
-        }
-        callPostHooks();
-    }
-
-    void tick(uint64_t count) {
+    void tick(uint64_t count = 0) {
         while (count > 0) {
-            tick();
+            oneTick();
             count--;
         }
     }
@@ -134,6 +108,32 @@ private:
     void incrementTick() {
         _tickCount++;
         main_time++;
+    }
+
+    void oneTick(void) {
+        incrementTick();
+        // Call pre hooks after incrementTick() so the _tickCount is the same as the post hooks.
+        callPreHooks();
+        _core->eval();
+        if (_trace != NULL) {
+            _trace->dump(static_cast<vluint64_t>(10*_tickCount-2));
+        }
+
+        // Set clock high
+        _core->clock = 1;
+        _core->eval();
+        if (_trace != NULL) {
+            _trace->dump(static_cast<vluint64_t>(10*_tickCount));
+        }
+
+        // Set clock low
+        _core->clock = 0;
+        _core->eval();
+        if (_trace != NULL) {
+            _trace->dump(static_cast<vluint64_t>(10*_tickCount+5));
+            _trace->flush();
+        }
+        callPostHooks();
     }
 };
 
