@@ -26,7 +26,7 @@ public:
         }
     }
 
-    const ChangeVector& changes()
+    const ChangeVector& changes() const
     {
         return _changes;
     }
@@ -66,11 +66,13 @@ SignalObserver<T, Core> makeObserver(T Core:: *signal) {
     return observer;
 }
 
-//typedef SignalObserver<uint8_t> SignalObserver8;
-//typedef SignalObserver8::ChangeVector ChangeVector8;
+template<typename T>
+using SignalEvent = std::tuple<uint64_t,T>;
+template<typename T>
+using ChangeVector = std::vector<SignalEvent<T>>;
 
-typedef std::tuple<uint64_t,uint8_t> SignalEvent8;
-typedef std::vector<SignalEvent8> ChangeVector8;
+using SignalEvent8 = SignalEvent<uint8_t>;
+using ChangeVector8 = std::vector<SignalEvent8>;
 
 std::ostream& operator << ( std::ostream& os, std::tuple<uint64_t, uint8_t> const& value );
 
