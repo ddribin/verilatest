@@ -84,13 +84,6 @@ public:
         addOutputHook(output.outputHook());
     }
 
-private:
-    Core _core;
-    uint64_t _tickCount;
-    VerilatedVcdC *_trace;
-    std::vector<TickHook> _inputHooks;
-    std::vector<TickHook> _outputHooks;
-
     void addInputHook(TickHook hook)
     {
         _inputHooks.push_back(hook);
@@ -100,6 +93,13 @@ private:
     {
         _outputHooks.push_back(hook);
     }
+
+private:
+    Core _core;
+    uint64_t _tickCount;
+    VerilatedVcdC *_trace;
+    std::vector<TickHook> _inputHooks;
+    std::vector<TickHook> _outputHooks;
 
     void callInputHooks()
     {
