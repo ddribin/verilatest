@@ -6,8 +6,10 @@
 #include <iostream>
 #include <algorithm>
 
+#include "Signal.hpp"
+
 template <typename T, class Core>
-class SignalObserver
+class SignalObserver : public SignalOutput<Core>
 {
 public:
     typedef std::tuple<uint64_t, T> ChangeTuple;
@@ -39,7 +41,7 @@ public:
         return changes;
     }
 
-    std::function<void (uint64_t, Core& core)> hook()
+    std::function<void (uint64_t, Core& core)> outputHook()
     {
         auto hook = [=](uint64_t tickCount, Core& core) {
             this->updateSignal(tickCount, core.*_signal);

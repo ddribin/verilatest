@@ -6,6 +6,8 @@
 #include <functional>
 #include <vector>
 
+#include "Signal.hpp"
+
 
 // Current simulation time
 // This is a 64-bit integer to reduce wrap over issues and
@@ -71,43 +73,45 @@ public:
             count--;
         }
     }
-    void addPreHook(TickHook hook)
+
+    void addInput(SignalInput<Core>& input)
     {
-        _preHooks.push_back(hook);
+        addInputHook(input.inputHook());
     }
 
-    void addPostHook(TickHook hook)
+    void addOutput(SignalOutput<Core>& output)
     {
-        _postHooks.push_back(hook);
-    }
-
-    void tick_n(uint64_t count, std::function<void (uint64_t, Core *)>func)
-    {
-        while (count > 0) {
-            tick();
-            func(_tickCount, _core);
-            count--;
-        }
+        addOutputHook(output.outputHook());
     }
 
 private:
     Core _core;
     uint64_t _tickCount;
     VerilatedVcdC *_trace;
-    std::vector<TickHook> _preHooks;
-    std::vector<TickHook> _postHooks;
+    std::vector<TickHook> _inputHooks;
+    std::vector<TickHook> _outputHooks;
 
-    void callPreHooks()
+    void addInputHook(TickHook hook)
     {
-        for (auto h : _preHooks) {
-            h(_tickCount, _core);
+        _inputHooks.push_back(hook);
+    }
+
+    void addOutputHook(TickHook hook)
+    {
+        _outputHooks.push_back(hook);
+    }
+
+    void callInputHooks()
+    {
+        for (auto hook : _inputHooks) {
+            hook(_tickCount, _core);
         }
     }
 
-    void callPostHooks()
+    void callOutputHooks()
     {
-        for (auto h : _postHooks) {
-            h(_tickCount, _core);
+        for (auto hook : _outputHooks) {
+            hook(_tickCount, _core);
         }
     }
 
@@ -120,8 +124,8 @@ private:
     void oneTick(void)
     {
         incrementTick();
-        // Call pre hooks after incrementTick() so the _tickCount is the same as the post hooks.
-        callPreHooks();
+        // Call input hooks after incrementTick() so the _tickCount is the same as the output hooks.
+        callInputHooks();
         _core.eval();
         if (_trace != NULL) {
             _trace->dump(static_cast<vluint64_t>(10*_tickCount-2));
@@ -141,7 +145,7 @@ private:
             _trace->dump(static_cast<vluint64_t>(10*_tickCount+5));
             _trace->flush();
         }
-        callPostHooks();
+        callOutputHooks();
     }
 };
 
