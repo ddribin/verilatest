@@ -25,7 +25,7 @@ public:
         : _tickCount{0}, _trace{NULL}
     {
         Verilated::traceEverOn(true);
-        _core.clock = 0;
+        _core.setClock(0);
         _core.eval();
     }
 
@@ -132,14 +132,14 @@ private:
         }
 
         // Set clock high
-        _core.clock = 1;
+        _core.setClock(1);
         _core.eval();
         if (_trace != NULL) {
             _trace->dump(static_cast<vluint64_t>(10*_tickCount));
         }
 
         // Set clock low
-        _core.clock = 0;
+        _core.setClock(0);
         _core.eval();
         if (_trace != NULL) {
             _trace->dump(static_cast<vluint64_t>(10*_tickCount+5));
