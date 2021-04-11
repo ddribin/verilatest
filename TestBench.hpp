@@ -8,6 +8,9 @@
 
 #include "Signal.hpp"
 
+#ifndef VERILATEST_TRACE
+#define VERILATEST_TRACE 1
+#endif
 
 // Current simulation time
 // This is a 64-bit integer to reduce wrap over issues and
@@ -36,6 +39,7 @@ public:
         return _core;
     }
 
+#if VERILATEST_TRACE
     virtual void openTrace(const char * filename)
     {
         if (_trace == NULL) {
@@ -55,6 +59,7 @@ public:
             _trace = NULL;
         }
     }
+#endif
 
     uint64_t tickCount(void)
     {
@@ -127,24 +132,30 @@ private:
         // Call input hooks after incrementTick() so the _tickCount is the same as the output hooks.
         callInputHooks();
         _core.eval();
+#if VERILATEST_TRACE
         if (_trace != NULL) {
             _trace->dump(static_cast<vluint64_t>(10*_tickCount-2));
         }
+#endif
 
         // Set clock high
         _core.setClock(1);
         _core.eval();
+#if VERILATEST_TRACE
         if (_trace != NULL) {
             _trace->dump(static_cast<vluint64_t>(10*_tickCount));
         }
+#endif
 
         // Set clock low
         _core.setClock(0);
         _core.eval();
+#if VERILATEST_TRACE
         if (_trace != NULL) {
             _trace->dump(static_cast<vluint64_t>(10*_tickCount+5));
             _trace->flush();
         }
+#endif
         callOutputHooks();
     }
 };
