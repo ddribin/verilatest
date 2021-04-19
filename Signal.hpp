@@ -14,6 +14,7 @@ template<class Core>
 class SignalOutput
 {
 public:
+    virtual void setInitialValue(Core& core) = 0;
     virtual std::function<void (uint64_t, Core& core)> outputHook() = 0;
 };
 

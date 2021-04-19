@@ -41,6 +41,11 @@ public:
         return changes;
     }
 
+    void setInitialValue(Core &core)
+    {
+        _value = core.*_signal;
+    }
+
     std::function<void (uint64_t, Core& core)> outputHook()
     {
         auto hook = [=](uint64_t tickCount, Core& core) {

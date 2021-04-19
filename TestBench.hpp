@@ -86,6 +86,7 @@ public:
 
     void addOutput(SignalOutput<Core>& output)
     {
+        output.setInitialValue(_core);
         addOutputHook(output.outputHook());
     }
 
