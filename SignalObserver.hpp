@@ -18,6 +18,11 @@ public:
     SignalObserver(T Core:: *signal, T initialValue = 0) : 
         _signal(signal),
         _value(initialValue) { }
+    SignalObserver(T Core:: *signal, Component<Core>& component, T initialValue = 0) :
+        _signal(signal)
+    {
+        component.addOutput(*this);
+    }
     virtual ~SignalObserver() { }
 
     void updateSignal(uint64_t time, T newValue)

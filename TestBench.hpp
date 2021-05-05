@@ -19,7 +19,7 @@
 extern uint64_t main_time;
 
 template <class Core>
-class TestBench
+class TestBench : public Component<Core>
 {
 public:
     typedef std::function<void (uint64_t, Core&)> TickHook;

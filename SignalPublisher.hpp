@@ -18,6 +18,11 @@ public:
     typedef std::vector<ChangeTuple> ChangeVector;
 
     SignalPublisher(T Core::* signal) : _signal(signal) { }
+    SignalPublisher(T Core::* signal, Component<Core>& component) :
+        _signal(signal)
+    {
+        component.addInput(*this);
+    }
     virtual ~SignalPublisher() { }
 
     void addInput(const ChangeTuple &input)
