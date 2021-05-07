@@ -16,6 +16,21 @@ struct TestFixture {
     }
 
     virtual ~TestFixture() {}
+
+    Input8 makeInput(uint8_t Core:: *signal)
+    {
+        return Input8(signal, bench);
+    };
+
+    Output8 makeOutput(uint8_t Core:: *signal, uint8_t initialValue = 0)
+    {
+        return Output8(signal, bench);
+    };
+
+    Output16 makeOutput(uint16_t Core:: *signal, uint16_t initialValue = 0)
+    {
+        return Output16(signal, bench);
+    };
 };
 
 #endif

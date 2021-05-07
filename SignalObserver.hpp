@@ -81,6 +81,9 @@ using ChangeVector = std::vector<SignalEvent<T>>;
 using SignalEvent8 = SignalEvent<uint8_t>;
 using ChangeVector8 = std::vector<SignalEvent8>;
 
+using SignalEvent16 = SignalEvent<uint16_t>;
+using ChangeVector16 = std::vector<SignalEvent16>;
+
 std::ostream& operator << ( std::ostream& os, std::tuple<uint64_t, uint8_t> const& value );
 
 #endif // SIGNAL_OBSERVER_H
