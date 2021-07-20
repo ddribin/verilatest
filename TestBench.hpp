@@ -9,7 +9,7 @@
 #include "Signal.hpp"
 
 #ifndef VERILATEST_TRACE
-#define VERILATEST_TRACE 1
+#define VERILATEST_TRACE 0
 #endif
 
 // Current simulation time
