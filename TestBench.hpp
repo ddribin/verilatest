@@ -38,9 +38,6 @@ public:
         // _core.setClock(0);
         setClock(_core, 0);
         _core.eval();
-
-        // This puts the rising edge on even 1ns boundaries
-        _context.timeInc(5);
     }
 
     virtual ~TestBench(void) { }
@@ -59,6 +56,9 @@ public:
             _core.trace(_trace, 99);
             _trace->open(filename);
             _trace->dump(_context.time());
+
+            // This puts the rising edge on even 1ns boundaries
+            _context.timeInc(5);
         }
     }
 
