@@ -1,21 +1,21 @@
-#ifndef	TEST_FIXTURE_H
-#define	TEST_FIXTURE_H
+#ifndef	VERILATEST_TEST_FIXTURE_BASE_H
+#define	VERILATEST_TEST_FIXTURE_BASE_H
 
 #include "Signal.hpp"
 
 template<class Core>
-struct TestFixture {
+struct TestFixtureBase {
     using Input8 = SignalPublisher<uint8_t, Core>;
     using Output8 = SignalObserver<uint8_t, Core>;
     using Output16 = SignalObserver<uint16_t, Core>;
     TestBench<Core> bench;
     Core& core;
-    TestFixture() :
+    TestFixtureBase() :
         core(bench.core())
     {
     }
 
-    virtual ~TestFixture() {}
+    virtual ~TestFixtureBase() {}
 
     Input8 makeInput(uint8_t Core:: *signal)
     {

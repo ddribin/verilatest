@@ -1,5 +1,5 @@
-#ifndef	SIGNAL_OBSERVER_H
-#define	SIGNAL_OBSERVER_H
+#ifndef	VERILATEST_SIGNAL_OBSERVER_H
+#define	VERILATEST_SIGNAL_OBSERVER_H
 
 #include <vector>
 #include <tuple>
@@ -86,4 +86,4 @@ using ChangeVector16 = std::vector<SignalEvent16>;
 
 std::ostream& operator << ( std::ostream& os, std::tuple<uint64_t, uint8_t> const& value );
 
-#endif // SIGNAL_OBSERVER_H
+#endif // VERILATEST_SIGNAL_OBSERVER_H

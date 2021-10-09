@@ -1,5 +1,5 @@
-#ifndef SIGNAL_PUBLISHER_H
-#define SIGNAL_PUBLISHER_H
+#ifndef VERILATEST_SIGNAL_PUBLISHER_H
+#define VERILATEST_SIGNAL_PUBLISHER_H
 
 #include <vector>
 #include <tuple>

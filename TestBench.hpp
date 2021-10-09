@@ -1,5 +1,5 @@
-#ifndef	TESTBENCH_H
-#define	TESTBENCH_H
+#ifndef	VERILATEST_TESTBENCH_H
+#define	VERILATEST_TESTBENCH_H
 
 #include <verilated.h>
 #include <verilated_vcd_c.h>

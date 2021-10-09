@@ -1,5 +1,5 @@
-#ifndef SIGNAL_H
-#define SIGNAL_H
+#ifndef VERILATEST_SIGNAL_H
+#define VERILATEST_SIGNAL_H
 
 #include <functional>
 
@@ -26,4 +26,4 @@ class Component
     virtual void addOutput(SignalOutput<Core>& output) = 0;
 };
 
-#endif // SIGNAL_H
+#endif // VERILATEST_SIGNAL_H
