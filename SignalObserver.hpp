@@ -17,9 +17,11 @@ public:
 
     SignalObserver(T Core:: *signal, T initialValue = 0) : 
         _signal(signal),
+        _initialValue(initialValue),
         _value(initialValue) { }
     SignalObserver(T Core:: *signal, Component<Core>& component, T initialValue = 0) :
-        _signal(signal)
+        _signal(signal),
+        _initialValue(initialValue)
     {
         component.addOutput(*this);
     }
@@ -36,6 +38,33 @@ public:
     const ChangeVector& changes() const
     {
         return _changes;
+    }
+
+    std::vector<T> timeline(uint64_t endTime) const
+    {
+        uint64_t time = 0;
+        T value = _initialValue;
+        std::vector<T> timeline;
+        // timeline.push_back(value);
+
+        for (auto change : _changes) {
+            uint64_t changeTime = std::get<0>(change);
+            T changeValue = std::get<1>(change);
+            while (time < changeTime) {
+                timeline.push_back(value);
+                time++;
+            }
+            // time == changeTime
+            value = changeValue;
+            timeline.push_back(value);
+            time++;
+        }
+
+        while (time <= endTime) {
+            timeline.push_back(value);
+            time++;
+        }
+        return timeline;
     }
 
     ChangeVector changes(size_t limit)
@@ -60,6 +89,7 @@ public:
     }
 
 private:
+    T _initialValue;
     T _value;
     T Core::* _signal;
     ChangeVector _changes;
@@ -80,9 +110,11 @@ using ChangeVector = std::vector<SignalEvent<T>>;
 
 using SignalEvent8 = SignalEvent<uint8_t>;
 using ChangeVector8 = std::vector<SignalEvent8>;
+using Vector8 = std::vector<uint8_t>;
 
 using SignalEvent16 = SignalEvent<uint16_t>;
 using ChangeVector16 = std::vector<SignalEvent16>;
+using Vector16 = std::vector<uint16_t>;
 
 std::ostream& operator << ( std::ostream& os, std::tuple<uint64_t, uint8_t> const& value );
 
