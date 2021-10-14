@@ -8,6 +8,7 @@ struct TestFixtureBase {
     using Input8 = SignalPublisher<uint8_t, Core>;
     using Output8 = SignalObserver<uint8_t, Core>;
     using Output16 = SignalObserver<uint16_t, Core>;
+    using Output32 = SignalObserver<uint32_t, Core>;
     TestBench<Core> bench;
     Core& core;
     TestFixtureBase() :
@@ -30,6 +31,11 @@ struct TestFixtureBase {
     Output16 makeOutput(uint16_t Core:: *signal, uint16_t initialValue = 0)
     {
         return Output16(signal, bench);
+    };
+
+    Output32 makeOutput(uint32_t Core:: *signal, uint32_t initialValue = 0)
+    {
+        return Output32(signal, bench);
     };
 };
 
