@@ -116,6 +116,12 @@ using SignalEvent16 = SignalEvent<uint16_t>;
 using ChangeVector16 = std::vector<SignalEvent16>;
 using Vector16 = std::vector<uint16_t>;
 
+using SignalEvent32 = SignalEvent<uint32_t>;
+using ChangeVector32 = std::vector<SignalEvent32>;
+using Vector32 = std::vector<uint32_t>;
+
 std::ostream& operator << ( std::ostream& os, std::tuple<uint64_t, uint8_t> const& value );
+std::ostream& operator << ( std::ostream& os, std::tuple<uint64_t, uint16_t> const& value );
+std::ostream& operator << ( std::ostream& os, std::tuple<uint64_t, uint32_t> const& value );
 
 #endif // VERILATEST_SIGNAL_OBSERVER_H
