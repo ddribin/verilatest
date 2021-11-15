@@ -12,12 +12,6 @@
 #define VERILATEST_TRACE 0
 #endif
 
-// Current simulation time
-// This is a 64-bit integer to reduce wrap over issues and
-// allow modulus.  This is in units of the timeprecision
-// used in Verilog (or from --timescale-override)
-extern uint64_t main_time;
-
 template <class Core>
 void setClock(Core & core, uint8_t clock);
 
@@ -136,7 +130,6 @@ private:
     void incrementTick()
     {
         _tickCount++;
-        main_time++;
     }
 
     void oneTick(void)
